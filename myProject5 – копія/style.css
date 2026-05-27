@@ -1,0 +1,16 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.menu-item {
+    transition: all 0.2s;
+}
+
+.menu-item:hover {
+    background-color: #374151;
+}
+
+.active {
+    background-color: #3b82f6;
+    color: white;
+}
