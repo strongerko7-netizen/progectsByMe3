@@ -239,23 +239,39 @@ function deleteLoan(index) {
 
 
 function renderStats() {
-    const totalBooks = books.length;
+    // 1. активні видачі
+    const activeLoans = loans.filter(l => !l.returned).length;
 
-    const totalCopies = books.reduce((sum, book) => {
-        return sum + (book.quantity || 0);
-    }, 0);
+    // 2. топ читач
+    const topVisitor = visitors.reduce((max, v) =>
+        (v.booksCount || 0) > (max.booksCount || 0) ? v : max,
+    visitors[0] || {});
 
-    const uniqueAuthors = new Set(
-        books.map(book => book.author ? book.author.toLowerCase().trim() : '')
-    ).size;
+    // 3. топ книга
+    const bookStats = {};
 
-    const statBooks = document.getElementById('statBooks');
-    const statCopies = document.getElementById('statCopies');
-    const statAuthors = document.getElementById('statAuthors');
+    loans.forEach(l => {
+        bookStats[l.book] = (bookStats[l.book] || 0) + 1;
+    });
 
-    if (statBooks) statBooks.textContent = totalBooks;
-    if (statCopies) statCopies.textContent = totalCopies;
-    if (statAuthors) statAuthors.textContent = uniqueAuthors;
+    let topBook = "-";
+    let max = 0;
+
+    for (const title in bookStats) {
+        if (bookStats[title] > max) {
+            max = bookStats[title];
+            topBook = title;
+        }
+    }
+
+    // 4. вивід у HTML
+    document.getElementById("statActiveLoans").innerText = activeLoans;
+
+    document.getElementById("statTopVisitor").innerText =
+        topVisitor.name ? `${topVisitor.name} (${topVisitor.booksCount || 0})` : "-";
+
+    document.getElementById("statTopBook").innerText =
+        topBook !== "-" ? `${topBook} (${max})` : "-";
 }
 
 // Оновлення статистики при змінах
@@ -270,6 +286,36 @@ let visitors = JSON.parse(localStorage.getItem('visitors')) || [];
 function saveVisitors() {
     localStorage.setItem('visitors', JSON.stringify(visitors));
 }
+
+
+function renderVisitors() {
+    const tbody = document.getElementById('visitorsTable');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (visitors.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Немає відвідувачів</td></tr>`;
+        return;
+    }
+
+    visitors.forEach((v, index) => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+            <td class="px-6 py-4">${v.name}</td>
+            <td class="px-6 py-4">${v.contact}</td>
+            <td class="px-6 py-4 text-center">${v.booksCount || 0}</td>
+            <td class="px-6 py-4 text-center">${v.createdAt || "-"}</td>
+            <td class="px-6 py-4 text-center">
+                <button onclick="deleteVisitor(${index})" class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
 
 function addVisitor() {
     const name = document.getElementById('visitorName').value.trim();
@@ -304,33 +350,7 @@ function deleteVisitor(index) {
     }
 }
 
-function renderVisitors() {
-    const tbody = document.getElementById('visitorsTable');
-    if (!tbody) return;
-    tbody.innerHTML = '';
 
-    if (visitors.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">Немає відвідувачів</td></tr>`;
-        return;
-    }
-
-    visitors.forEach((v, index) => {
-        const tr = document.createElement('tr');
-
-        tr.innerHTML = `
-            <td class="px-6 py-4">${v.name}</td>
-            <td class="px-6 py-4">${v.contact}</td>
-            <td class="px-6 py-4 text-center">${v.booksCount || 0}</td>
-            <td class="px-6 py-4 text-center">${v.createdAt || "-"}</td>
-            <td class="px-6 py-4 text-center">
-                <button onclick="deleteVisitor(${index})" class="text-red-600 hover:text-red-800">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
 
 function showAddVisitorModal() {
     document.getElementById('addVisitorModal').classList.remove('hidden');
