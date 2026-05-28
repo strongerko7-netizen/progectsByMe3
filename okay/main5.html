@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бібліотека</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="bg-gray-100 flex h-screen">
+
+    <!-- Бічне меню -->
+    <div class="w-64 bg-gray-900 text-white flex flex-col">
+        <div class="p-6 border-b border-gray-700">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <i class="fas fa-book"></i> БІБЛІОТЕКА
+            </h1>
+        </div>
+
+        <nav class="flex-1 p-4">
+            <ul class="space-y-1">
+                <li onclick="showSection(1)"
+                    class="menu-item active px-4 py-3 rounded-lg cursor-pointer flex items-center gap-3" id="menu1">
+                    <i class="fas fa-book"></i> Книги
+                </li>
+                <li onclick="showSection(2)"
+                    class="menu-item px-4 py-3 rounded-lg cursor-pointer flex items-center gap-3" id="menu2">
+                    <i class="fas fa-users"></i> Відвідувачі
+                </li>
+                <li onclick="showSection(3)"
+                    class="menu-item px-4 py-3 rounded-lg cursor-pointer flex items-center gap-3" id="menu3">
+                    <i class="fas fa-exchange-alt"></i> Видача книг
+                </li>
+                <li onclick="showSection(4)"
+                    class="menu-item px-4 py-3 rounded-lg cursor-pointer flex items-center gap-3" id="menu4">
+                    <i class="fas fa-chart-bar"></i> Статистика
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Основний контент -->
+    <div class="flex-1 overflow-auto">
+
+        <!-- Заголовок -->
+        <header class="bg-white shadow-sm border-b p-6">
+            <h2 class="text-3xl font-semibold text-gray-800" id="page-title">Облік книг</h2>
+        </header>
+
+        <!-- Секції -->
+        <div class="p-8">
+
+            <!-- Секція 1: Книги -->
+            <div id="section1" class="section">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold text-gray-800">Облік книг</h3>
+                    <button onclick="showAddBookModal()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition">
+                        <i class="fas fa-plus"></i> Додати книгу
+                    </button>
+                </div>
+
+                <!-- Пошук -->
+                <div class="mb-6">
+                    <input type="text" id="searchBooks" onkeyup="searchBooks()"
+                        placeholder="Пошук за назвою або автором..."
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500">
+                </div>
+
+                <!-- Таблиця книг -->
+                <div class="bg-white rounded-2xl shadow overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Назва</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Автор</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Рік</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Кількість</th>
+                                <th class="px-6 py-4 text-center text-sm font-medium text-gray-500">Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTable" class="divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <!-- <tr>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Назва</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">hellp</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Кількість</th>
+                                    <th class="px-6 py-4 text-center text-sm font-medium text-gray-500">Дії</th>
+                                </tr> -->
+                            </thead>
+                            <!-- Заповнюється через JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <!-- Секція 2: Відвідувачі -->
+            <div id="section2" class="section hidden">
+
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold text-gray-800">Відвідувачі</h3>
+
+                    <button onclick="showAddVisitorModal()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition">
+                        <i class="fas fa-plus"></i> Додати відвідувача
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Ім'я</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-500">Контакт</th>
+                                <th class="px-6 py-4 text-center text-sm font-medium text-gray-500">Книг</th>
+                                <th class="px-6 py-4 text-center text-sm font-medium text-gray-500">Дата</th>
+                                <th class="px-6 py-4 text-center text-sm font-medium text-gray-500">Дії</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visitorsTable" class="divide-y divide-gray-200">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Секція 3: Видача -->
+            <div id="section3" class="section hidden">
+
+                <div class="mb-6">
+                    <h3 class="text-2xl font-semibold text-gray-800">Видача книг</h3>
+                    <p class="text-gray-500">Облік видачі книг відвідувачам</p>
+                </div>
+
+                <!-- Форма -->
+                <div class="bg-white p-6 rounded-2xl shadow mb-6 space-y-4">
+
+                    <select id="loanBook" class="w-full px-4 py-3 border rounded-xl">
+                        <option value="">Виберіть книгу</option>
+                    </select>
+
+                    <select id="loanVisitor" class="w-full px-4 py-3 border rounded-xl">
+                        <option value="">Виберіть відвідувача</option>
+                    </select>
+
+                    <button onclick="addLoan()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl">
+                        Видати книгу
+                    </button>
+
+                </div>
+
+                <!-- Таблиця -->
+                <div class="bg-white rounded-2xl shadow overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm text-gray-500">Книга</th>
+                                <th class="px-6 py-4 text-left text-sm text-gray-500">Відвідувач</th>
+                                <th class="px-6 py-4 text-left text-sm text-gray-500">Дата</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loansTable" class="divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Секція 4: Статистика -->
+            <div id="section4" class="section hidden">
+                <div class="mb-6">
+                    <h3 class="text-2xl font-semibold text-gray-800">Статистика бібліотеки</h3>
+                    <p class="text-gray-500">Аналітика даних по книгах</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <div class="bg-white p-6 rounded-2xl shadow">
+                        <div class="text-gray-500">Всього зареєстрованих книг</div>
+                        <div id="statBooks" class="text-3xl font-bold text-blue-600 mt-2">0</div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow">
+                        <div class="text-gray-500">Всього примірників</div>
+                        <div id="statCopies" class="text-3xl font-bold text-green-600 mt-2">0</div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow">
+                        <div class="text-gray-500">Унікальних авторів</div>
+                        <div id="statAuthors" class="text-3xl font-bold text-purple-600 mt-2">0</div>
+                    </div>
+
+
+
+<div class="stat-card">
+    📚 Видано зараз: <span id="statActiveLoans">0</span>
+</div>
+
+<div class="stat-card">
+    👤 Найактивний читач: <span id="statTopVisitor">-</span>
+</div>
+
+<div class="stat-card">
+    📖 Найпопулярніша книга: <span id="statTopBook">-</span>
+</div>
+                    
+
+                </div>
+            </div>
+
+            <!-- Модальне вікно додавання книги -->
+            <div id="addBookModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-4">Додати нову книгу</h3>
+
+                        <div class="space-y-4">
+                            <input type="text" id="bookTitle" placeholder="Назва книги"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none">
+
+                            <input type="text" id="bookAuthor" placeholder="Автор"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none">
+
+                            <input type="number" id="bookYear" placeholder="Рік видання"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none">
+
+                            <input type="number" id="bookQuantity" placeholder="Кількість примірників" value="1" min="1"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none">
+                        </div>
+
+                    </div>
+
+                    <div class="border-t px-6 py-4 flex gap-3">
+                        <button onclick="hideAddBookModal()"
+                            class="flex-1 py-3 text-gray-700 font-medium border border-gray-300 rounded-xl hover:bg-gray-50">
+                            Скасувати
+                        </button>
+                        <button onclick="addBook()"
+                            class="flex-1 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700">
+                            Додати книгу
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="addVisitorModal"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+
+                <div class="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-4">Додати відвідувача</h3>
+
+                        <div class="space-y-4">
+                            <input type="text" id="visitorName" placeholder="Ім'я"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none">
+
+                            <input type="text" id="visitorContact" placeholder="Телефон або email"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="border-t px-6 py-4 flex gap-3">
+                        <button onclick="hideAddVisitorModal()"
+                            class="flex-1 py-3 text-gray-700 font-medium border border-gray-300 rounded-xl hover:bg-gray-50">
+                            Скасувати
+                        </button>
+
+                        <button onclick="addVisitor()"
+                            class="flex-1 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700">
+                            Додати
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <!-- Головний скрипт -->
+    <!-- Головний скрипт (дуже важливий!) -->
+    <script>
+        function showSection(n) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`section${n}`).classList.remove('hidden');
+
+            // Активне меню
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            const menuItem = document.getElementById(`menu${n}`);
+            if (menuItem) menuItem.classList.add('active');
+
+            // Заголовок
+            const titles = {
+                1: "Облік книг",
+                2: "Облік відвідувачів",
+                3: "Видача книг",
+                4: "Статистика"
+            };
+            document.getElementById('page-title').textContent = titles[n] || "Бібліотека";
+
+            // Оновлення даних при переході
+            if (n === 3) {
+                if (typeof updateLoanSelects === "function") updateLoanSelects();
+                if (typeof renderLoans === "function") renderLoans();
+            }
+            if (n === 4 && typeof renderStats === "function") {
+                renderStats();
+            }
+        }
+
+        // Запуск усього після завантаження
+        window.onload = function () {
+            console.log("Сайт завантажено успішно");
+
+            showSection(1);
+
+            // Ініціалізація всіх секцій
+            if (typeof renderBooks === "function") renderBooks();
+            if (typeof renderVisitors === "function") renderVisitors();
+            if (typeof updateLoanSelects === "function") updateLoanSelects();
+            if (typeof renderLoans === "function") renderLoans();
+            if (typeof renderStats === "function") renderStats();
+        };
+    </script>
+
+    <!-- <script src="./javaScript/books.js"></script>
+<script src="./javaScript/visitors.js"></script>
+<script src="./javaScript/loans.js"></script>
+<script src="./javaScript/stats.js"></script>
+<script src="./javaScript/main.js"></script> -->
+    <script src="app5.js"></script>
+
+
+
+
+</body>
+
+</html>
